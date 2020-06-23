@@ -17,14 +17,24 @@ const loggedInOnly = (req, res, next) => {
 
 // Route Handlers
 function authenticate(passport) {
+
+    //템플릿용 변수 설정
+router.use(function(req,res,next){
+    res.locals.currentUser = req.user;
+    console.log(res.locals.currentUser)
+    res.locals.errors = req.flash("error");
+    res.locals.infos = req.flash("info");
+    next();
+  });
 // Main Page
 router.get("/", loggedInOnly, (req, res) => {
+    console.log(req.user.username)
     res.render("index", { username: req.user.username });
   });
 
 
-router.get('/data' ,function(req,res){
-    console.log(req)
+router.get('/data' , loggedInOnly, function(req,res){
+    // console.log(req)
     res.json({"address":"서울시 마포구 백범로 18"})
 })  
 
