@@ -1,9 +1,8 @@
 var mongoose = require('mongoose')
 var bcrypt = require("bcryptjs");
 const uniqueValidator = require("mongoose-unique-validator");
-const Schema = mongoose.Schema;
 
-var UserSchema =  new Schema({
+var UserSchema = mongoose.Schema({
     username:{
         type:String,
         required:true
@@ -12,6 +11,7 @@ var UserSchema =  new Schema({
         type:String,
         required:true
     },
+    email:String,
     createAt:{
         type:Date,
         default:Date.now
@@ -67,5 +67,4 @@ UserSchema.virtual("password").set(function(value) {
 //   };
 //   //실제로 사용자 모델만들고 내보내기
 var User = mongoose.model("User" , UserSchema)
-
 module.exports = User;

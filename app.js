@@ -51,6 +51,7 @@ app.use(session({
 /*secret : 각 세션이 클라이언트에서 암호화되도록함. 쿠키해킹방지
 resave : 미들웨어 옵션, true하면 세션이 수정되지 않은 경우에도 세션 업데이트
 saveUninitialized : 미들웨어 옵션, 초기화되지 않은 세션 재설정*/
+app.use(express.static(__dirname+'/public'))
 app.use(flash());
 
 // Passport

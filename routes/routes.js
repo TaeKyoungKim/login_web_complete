@@ -54,36 +54,21 @@ router.get('/data' , loggedInOnly, function(req,res){
   );
 
 router.get('/signup',loggedOutOnly, function(req, res){
-    res.render('signup')
+    res.render('signup', {message:"true"})
 })
 
-// router.post('/signup' ,function(req, res){
-    
-//     var contact = new User()
-//     contact.username = req.body.username
-//     contact.password = req.body.password
 
-//     contact.save(function(err) {
-//         if(err){
-//             res.json({
-//                 status:'error',
-//                 message:err
-//             })
-//         } else {
-//             res.json({
-//                 message:"New contact Created",
-//                 data:contact
-//             })
-//         }
-//     })
-    
-    
-// })
-
-// Register Handler
-router.post("/signup", (req, res, next) => {
-    const { username, password } = req.body;
-    User.create({ username, password })
+router.post("/signup",function(req,res,next){
+    var username = req.body.username;
+     var email =  req.body.email
+    var password = req.body.password;
+    User.findOne({username:username},function(err,user){
+      if(err){return next(err);}
+      if(user){
+        req.flash("error","사용자가 이미 있습니다.");
+        return res.render("signup" , {message:"false"});
+      }
+      User.create({ username,email, password })
       .then(user => {
         req.login(user, err => {
           if (err) next(err);
@@ -96,23 +81,8 @@ router.post("/signup", (req, res, next) => {
           res.redirect("/signup");
         } else next(err);
       });
+    });
   });
-// router.post("/signup",function(req,res,next){
-//     var username = req.body.username;
-//     var password = req.body.password;
-//     User.findOne({username:username},function(err,user){
-//       if(err){return next(err);}
-//       if(user){
-//         req.flash("error","사용자가 이미 있습니다.");
-//         return res.redirect("/signup");
-//       }
-//       var newUser = new User({
-//         username:username,
-//         passwordHash:password
-//       });
-//       newUser.save(next);
-//     });
-//   });
 
   
 router.post('/content' ,function(req, res){

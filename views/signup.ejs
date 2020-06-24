@@ -1,7 +1,13 @@
 <%- include('_header.ejs') %>
+<% if(message == "false") { %>
+  <script type="text/javascript">
+    alert("이미 아이디가 존재합니다");
+  </script>
+<% } %>
 <h1>Sign up</h1>
 <form action="/signup" method="post">
   <input name="username" type="text" class="form-control" placeholder="Username" required autofocus />
+  <input name="email" type="text" class="form-control" placeholder="email" />
   <input name="password" type="password" class="form-control" placeholder="Password" required />
   <input type="submit" value="Sign up" class="btn btn-primary btn-block" />
 </form>
