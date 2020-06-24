@@ -26,7 +26,7 @@ router.use(function(req,res,next){
     res.locals.infos = req.flash("info");
     next();
   });
-// Main Page
+// // Main Page
 router.get("/", loggedInOnly, (req, res) => {
     console.log(req.user.username)
     res.render("index", { username: req.user.username });
@@ -53,7 +53,7 @@ router.get('/data' , loggedInOnly, function(req,res){
     })
   );
 
-router.get('/signup',function(req, res){
+router.get('/signup',loggedOutOnly, function(req, res){
     res.render('signup')
 })
 
@@ -80,22 +80,39 @@ router.get('/signup',function(req, res){
     
 // })
 
-router.post("/signup",function(req,res,next){
-    var username = req.body.username;
-    var password = req.body.password;
-    User.findOne({username:username},function(err,user){
-      if(err){return next(err);}
-      if(user){
-        req.flash("error","사용자가 이미 있습니다.");
-        return res.redirect("/signup");
-      }
-      var newUser = new User({
-        username:username,
-        passwordHash:password
+// Register Handler
+router.post("/signup", (req, res, next) => {
+    const { username, password } = req.body;
+    User.create({ username, password })
+      .then(user => {
+        req.login(user, err => {
+          if (err) next(err);
+          else res.redirect("/");
+        });
+      })
+      .catch(err => {
+        if (err.name === "ValidationError") {
+          req.flash("Sorry, that username is already taken.");
+          res.redirect("/signup");
+        } else next(err);
       });
-      newUser.save(next);
-    });
   });
+// router.post("/signup",function(req,res,next){
+//     var username = req.body.username;
+//     var password = req.body.password;
+//     User.findOne({username:username},function(err,user){
+//       if(err){return next(err);}
+//       if(user){
+//         req.flash("error","사용자가 이미 있습니다.");
+//         return res.redirect("/signup");
+//       }
+//       var newUser = new User({
+//         username:username,
+//         passwordHash:password
+//       });
+//       newUser.save(next);
+//     });
+//   });
 
   
 router.post('/content' ,function(req, res){
